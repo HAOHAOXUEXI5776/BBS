@@ -1,0 +1,63 @@
+<ul class="comments">
+    {% for comment in comments %}
+    <li class="comment">
+        <div class="comment-thumbnail">
+            <a href="{{ url_for('.user', username=comment.author.username) }}">
+                <img class="img-rounded profile-thumbnail" src="{{ comment.author.gravatar(size=40) }}">
+            </a>
+        </div>
+        <div class="comment-content">
+            <div class="comment-date">{{ moment(comment.timestamp).fromNow() }}</div>
+            <div class="comment-author"><a href="{{ url_for('.user', username=comment.author.username) }}">{{ comment.author.username }}</a> {{comment.floor}} 层</div>
+            <div class="comment-body">
+                {% if comment.disabled %}
+                <p><i>评论被删除.</i></p>
+                {% endif %}
+                {% if current_user.is_administrator() or current_user.is_moderate(comment.post.board) or not comment.disabled %}
+                    {% if comment.body_html %}
+                        {{ comment.body_html | safe }}
+                    {% else %}
+                        {{ comment.body }}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="comment-footer">
+                <ul class="list-inline">
+                    <li>
+                        <!--点赞/取消点赞按钮-->
+                        <!--(因为匿名用户肯定不在点赞者中，故会显示点赞。当他点赞时，路由函数会把它引向登录界面)-->
+                        {% if not current_user.is_like_comment(comment) %}
+                        <!--未点赞-->
+                        <a href="{{ url_for('.like_comment', id=comment.id, page=page) }}">
+                            <span class="label label-primary" >赞同 {% if comment.likers.count() !=0 %}{{comment.likers.count()}}{% endif %}</span>
+                        </a>
+                        {% else %}
+                        <!--已点赞-->
+                        <a  href="{{ url_for('.dislike_comment', id=comment.id, page=page) }}">
+                            <span class="label label-success">已赞同 {{comment.likers.count()}}</span>
+                        </a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <a href="{{ url_for('.post', id=comment.post.id) }}">
+                            <span class="label label-info" >所属帖子</span>
+                        </a>
+                    </li>
+                    <li>
+                        {% if current_user.is_administrator() or current_user.is_moderate(comment.post.board) %}
+                            <br>
+                            {% if comment.disabled %}
+                            <a  href="{{ url_for('.recover_comment', id=comment.id, page=page) }}">
+                                <span class="label label-default">恢复</span></a>
+                            {% else %}
+                            <a  href="{{ url_for('.delete_comment', id=comment.id, page=page) }}">
+                                <span  class="label label-danger">删除</span></a>
+                            {% endif %}
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>

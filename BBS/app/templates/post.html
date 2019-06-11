@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}BBS - 帖子{% endblock %}
+
+{% block page_content %}
+
+<div class="page-header">
+    <a  href="{{url_for('.index')}}">首页</a> >>
+    <a href="{{url_for('.boards')}}">版块目录</a> >>
+    <a href="{{ url_for('.board', boardname=board.name)}}">{{ board.name }}</a> >>
+    <a href="{{ url_for('.post', id=post.id,) }}"> {{ post.title }} </a>
+</div>
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=post.id) }}
+</div>
+{% endif %}
+
+<ul class="posts">
+<li class="post">
+    <div class="post-title">
+        <!--注：如果帖子被删除的话，普通用户是不会显示该页面的，[该帖子已被删除]是给管理员/版务们看的-->
+        <p>{% if post.disabled %}[该帖子已被删除]{% endif %}{{ post.title }}</p>
+    </div>
+    <div class="post-footer">
+        {% if current_user == post.author %}
+            <a href="{{ url_for('.edit', id=post.id) }}">
+                <span class="label label-primary">编辑</span>
+            </a>
+            <a href="{{ url_for('.delete_post', id=post.id) }}">
+                <span class="label label-danger">删除</span>
+            </a>
+        {% elif current_user.is_administrator() or current_user.is_moderate(post.board) %}
+            <a href="{{ url_for('.edit', id=post.id) }}">
+                <span class="label label-danger">编辑 [Admin]</span>
+            </a>
+            {% if not post.disabled  %}
+                <a href="{{ url_for('.delete_post', id=post.id) }}">
+                    <span class="label label-danger">删除 [Admin]</span>
+                </a>
+            {% else %}
+                <a href="{{ url_for('.recover_post', id=post.id) }}">
+                    <span class="label label-success">恢复 [Admin]</span>
+                </a>
+            {% endif %}
+        {% endif %}
+        {% if current_user.is_collect_post(post) %}
+            <a href="{{ url_for('.not_collect_post', id=post.id) }}">
+                <span class="label label-success">已收藏 {{post.collectors.count()}}</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('.collect_post', id=post.id) }}">
+                <span class="label label-primary">收藏 {% if post.collectors.count() !=0 %}{{post.collectors.count()}}{% endif %}</span>
+            </a>
+        {% endif %}
+        <a href="{{ url_for('.post', id=post.id) }}#comments">
+            <span class="label label-primary">{{ post.comments.count() }} 条回帖</span>
+        </a>
+    </div>
+</li>
+</ul>
+
+{% include '_comments.html' %}
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=post.id) }}
+</div>
+{% endif %}
+
+
+{% if current_user.can(Permission.COMMENT) %}
+<div class="comment-form">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}BBS - 比较{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <a  href="{{url_for('.index')}}"> 首页 </a>  >> <a href="{{url_for('.compare')}}"> 比较 </a>
+</div>
+{{ wtf.quick_form(form) }}
+{% endblock %}

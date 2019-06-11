@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}BBS - 回帖{% endblock %}
+
+{% block page_content %}
+
+<div class="page-header">
+    <a  href="{{url_for('.index')}}">首页</a> >>
+    <a href="{{url_for('.boards')}}">版块目录</a> >>
+    <a href="{{ url_for('.board', boardname=board.name)}}">{{ board.name }}</a> >>
+    <a href="{{ url_for('.post', id=post.id, page=page) }}"> {{ post.title }} </a> >>
+    回复第{{ floor }}层
+</div>
+
+
+{% if current_user.can(Permission.COMMENT) %}
+<div class="comment-form">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,1 @@
+用户 {{ user.username }} 新加入了。

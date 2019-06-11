@@ -1,0 +1,2 @@
+用户 <b>{{user.username}}</b> 在过去的十分钟发帖 <b>{{times}}</b> 次，请注意！<br>
+点此<a href="{{ url_for('main.user', username=user.username, _external=True) }}">{{user.username}}</a>查看其主页。

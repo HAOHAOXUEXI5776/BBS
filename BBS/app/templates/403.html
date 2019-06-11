@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+ {% block title %}BBS - 无权限{% endblock %}
+ {% block page_content %}
+<div class="page-header">
+    {% if user_disabled %}
+    <h1>用户被删除</h1>
+    {% else %}
+    <h1>无权限</h1>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+<p>尊敬的 {{ user.username }},</p>
+<p>为了确认你用此邮箱注册的账户， <a href="{{ url_for('auth.change_email', token=token, _external=True) }}">点此链接</a>.</p>
+<p>你也可以通过浏览器访问以下链接以确认您的账户</p>
+<p>{{ url_for('auth.change_email', token=token, _external=True) }}</p>
+<p>来自</p>
+<p>《数据库概论》BBS团队</p>
+<p><small>注意：无需回复此邮件</small></p>

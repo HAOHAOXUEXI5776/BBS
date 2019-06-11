@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+ {% block title %}BBS - {{ user.username }}{% endblock %}
+ {% block page_content %}
+<div class="page-header">
+    <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
+    <div class="profile-header">
+        <h1>{{ user.username }}
+        {% if user.disabled %} [该用户已被删除]{% endif %}
+        </h1>
+        {% if user.name or user.location %}
+        <p>
+            {% if user.name %}{{ user.name }}{% endif %}
+            {% if user.location %}
+                来自 <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a>
+            {% endif %}
+            <strong>性别</strong>{% if user.is_male %} 男 {% else %} 女 {% endif %}
+            <strong>生日</strong>{{ user.birthday.year }}年{{ user.birthday.month }}月{{ user.birthday.day }}日
+        </p>
+        {% endif %}
+        {% if current_user.is_administrator() %}
+        <p><strong>邮箱</strong> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+        {% endif %}
+        {% if user.about_me %}<p><strong>简介</strong> {{ user.about_me }}</p>
+        {%else%} 这个人还没有写简介{% endif %}
+        <p>加入时间 {{ moment(user.member_since).format('L') }}. 上次查看 {{ moment(user.last_seen).fromNow() }}.</p>
+        <p><strong>成就</strong>  发了{{ user.posts.count() }}帖子 评论了{{ user.comments.count() }}条 收藏了{{ user.collected_posts.count()}}帖子
+            收藏了{{ user.collected_boards.count() }}版块 点赞了{{ user.liked_comments.count()}}回帖</p>
+        <p>
+            {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+                {% if not current_user.is_following(user) %}
+                <a href="{{ url_for('.follow', username=user.username) }}" class="btn btn-primary">关注</a>
+                {% else %}
+                <a href="{{ url_for('.unfollow', username=user.username) }}" class="btn btn-default">取消关注</a>
+                {% endif %}
+            {% endif %}
+            <a href="{{ url_for('.followers', username=user.username) }}">关注者: <span class="badge">{{ user.followers.count() - 1 }}</span></a>
+            <a href="{{ url_for('.followed_by', username=user.username) }}">关注了: <span class="badge">{{ user.followed.count() - 1 }}</span></a>
+            {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
+            | <span class="label label-default">ta关注了你</span>
+            {% endif %}
+        </p>
+        <p>
+        {% if user == current_user %}
+        <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">编辑资料</a>
+        {% endif %}
+        {% if current_user.is_administrator() %}
+        <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">编辑资料 [Admin]</a>
+        {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="post-tabs">
+    <ul class="nav nav-tabs">
+        <li{% if show_user_posts %} class="active"{% endif %}><a href="{{ url_for('.show_user_posts', username=user.username) }}">发过的帖子</a></li>
+        <li{% if show_user_comments %} class="active"{% endif %}><a href="{{ url_for('.show_user_comments', username=user.username) }}">发表的评论</a></li>
+        <li{% if show_user_collected_posts %} class="active"{% endif %}><a href="{{ url_for('.show_user_collected_posts', username=user.username) }}">收藏的帖子</a></li>
+        <li{% if show_user_collected_boards %} class="active"{% endif %}><a href="{{ url_for('.show_user_collected_boards', username=user.username) }}">收藏的版块</a></li>
+        <li{% if show_user_liked_comments %} class="active"{% endif %}><a href="{{ url_for('.show_user_liked_comments', username=user.username) }}">点赞的回帖</a></li>
+    </ul>
+    {% if show_user_posts or show_user_collected_posts %}
+        {% include '_posts.html' %}
+    {% elif show_user_comments or show_user_liked_comments %}
+        {% include '_user_comments.html' %}
+    {% else %}
+        {% include '_boards.html' %}
+    {% endif %}
+</div>
+
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
+</div>
+{% endif %}
+
+{% endblock %}

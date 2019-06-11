@@ -1,0 +1,7 @@
+尊敬的 {{ user.username }},
+欢迎来到 《数据库概论》BBS！
+通过浏览器访问以下链接以确认您的账户：
+{{ url_for('auth.confirm', token=token, _external = True)}}
+来自
+《数据库概论》BBS团队
+注意：无需回复此邮件

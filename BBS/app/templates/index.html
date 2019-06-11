@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}BBS - 首页{% endblock %}
+
+{% block page_content %}
+<div class="post-tabs">
+    <ul class="nav nav-tabs">
+        <li{% if show_all %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">所有帖子</a></li>
+        <li{% if most_viewed %} class="active"{% endif %}><a href="{{ url_for('.most_viewed') }}">热门[点击前10]</a></li>
+        <li{% if most_comment %} class="active"{% endif %}><a href="{{ url_for('.most_comment') }}">热门[回帖前10]</a></li>
+        {% if current_user.is_authenticated %}
+        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">关注</a></li>
+        {% endif %}
+    </ul>
+    {% include '_posts.html' %}
+</div>
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}

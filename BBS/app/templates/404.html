@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}BBS - 页面没有找到{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    {% if deleted_post %}
+        <h1>帖子被删除了</h1>
+    {% else %}
+        <h1>页面没有找到</h1>
+    {% endif %}
+</div>
+{% endblock %}

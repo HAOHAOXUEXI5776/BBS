@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}BBS{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <a  href="{{url_for('.index')}}"> 首页 </a>  >> <a href="{{url_for('.compare')}}"> 比较 </a>
+</div>
+{{ wtf.quick_form(form) }}
+
+<h4>在版块<strong>{{board1.name}}</strong>发帖比在版块<strong>{{board2.name}}</strong>发帖多的用户:</h4>
+
+<table class="table table-hover followers">
+    <thead><tr><th>用户</th><th>在 {{board1.name}} 的发帖量</th><th>在 {{board2.name}} 的发帖量</th></tr></thead>
+    {% for user in users %}
+    <tr>
+        <td>
+            <a href="{{ url_for('.user', username = user[0].username) }}">
+                <img class="img-rounded" src="{{user[0].gravatar(size=32) }}">
+                {{ user[0].username }}
+            </a>
+        </td>
+        <td>{{ user[1] }}</td>
+        <td>{% if user[2] == None %}{{ 0 }}{% else %}{{ user[2] }}{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

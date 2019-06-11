@@ -1,0 +1,14 @@
+<table class="table table-hover followers">
+    <thead><tr><th>用户</th><th>回帖数</th></tr></thead>
+    {% for user in users %}
+    <tr>
+        <td>
+            <a href="{{ url_for('.user', username = user[0].username) }}">
+                <img class="img-rounded" src="{{ user[0].gravatar(size=32) }}">
+                {{ user[0].username }}
+            </a>
+        </td>
+        <td>{{ user[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>

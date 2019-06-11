@@ -1,0 +1,2 @@
+用户 {{user.username}} 在过去的十分钟发帖 {{times}} 次，请注意！
+由此链接：{{ url_for('main.user', username=user.username, _external=True) }} 查看其主页。

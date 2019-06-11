@@ -1,0 +1,48 @@
+****文件结构****
+app/			主要代码
+|__ auth/		登录/注册后端
+    |__ __init__.py	初始化路由
+    |__ forms.py	登录/注册的表单
+    |__ views.py	登录/注册的路由代码
+|__ main/		除登录/注册外的界面后端
+    |__ __init__.py	初始化路由
+    |__ errors.py	错误界面（404，403等）的路由
+    |__ forms.py	表单
+    |__ views.py	主要路由代码
+|__ static/		静态文件（用于前端）
+|__ templates/		前端代码（html文件）
+|__ __init__.py		初始化代码
+|__ decorators.py	装饰器代码，方便权限管理
+|__ email.py		发送邮件代码
+|__ expections.py	异常处理类
+|__ models.py		数据库设计
+migrations/		辅助目录，协助数据库的更新
+config.py		全局配置代码
+data-dev.sqlite		数据库文件（包含100个用户，15个版块，500个帖子，3000个回帖）【勿删】
+manage.py		入口文件
+requirements.txt	所需库文件
+Readme.txt		本文件
+
+****如何运行****
+0. 安装python2或python3
+1. 命令行到项目根目录处
+2. 安装所需库：
+pip install -r requirements.txt
+3. 本机运行服务器
+python manage.py runserver --host 127.0.0.1
+4. 在浏览器打开网址：
+127.0.0.1:5000
+
+
+****管理员用户****
+有两个管理员，账号为：
+1309025479@qq.com
+和
+1500012848@pku.edu.cn
+密码均为123
+
+***注意***
+程序具有用邮箱通知用户的工程，邮箱的配置代码需在config.py中，将
+MAIL_USERNAME = os.environ.get('MAIL_USERNAME', 'mail_to_send_notification')
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', 'mail_password')
+由于水平有限，我只找到了用QQ邮箱当作发送邮箱的方法。将mail_to_send_notification替换成发送的QQ邮箱地址，将mail_password替换成一串字符串，如何配置请参考https://www.cnblogs.com/0zcl/p/8443544.html

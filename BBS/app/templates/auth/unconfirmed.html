@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}BBS - 确认账户{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>
+        你好, {{ current_user.username }}!
+    </h1>
+    <h3>您的账户还未确认</h3>
+    <p>
+        访问此网站需要您对账户进行确认。
+        检查一下你注册邮箱的收件箱，你应该收到了一封邮件，里面有一个确认账户的链接
+    </p>
+    <p>
+        需要重新接收带有确认链接的邮件？
+        <a href="{{ url_for('auth.resend_confirmation') }}">点此发送</a>
+    </p>
+</div>
+{% endblock %}

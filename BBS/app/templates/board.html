@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+ {% block title %}BBS - {{ board.name }}{% endblock %}
+ {% block page_content %}
+
+<div class="page-header">
+    <a  href="{{url_for('.index')}}">首页</a> >> <a href="{{url_for('.boards')}}">版块目录</a> >> <a href="{{ url_for('.board', boardname=board.name)}}">{{ board.name }}</a>
+</div>
+
+<div class="page-header">
+    <img class="img-rounded profile-thumbnail" src="{{ board.gravatar(size=256) }}">
+    <div class="profile-header">
+        <h1>{{ board.name }}</h1>
+        <p> <strong>版块介绍</strong> {{ board.intoduction }} </p>
+        <p><strong>版务</strong>
+            {% for person in board.moderators.all() %}
+                <a href="{{ url_for('.user', username=person.username) }}">{{ ' ' + person.username }}</a>
+            {% endfor %}
+        </p>
+        <p><strong>帖子数</strong> {{ board.posts.count() }}</p>
+
+        <p>
+        {% if current_user.is_moderate(board) or current_user.is_administrator() %}
+        <a class="btn btn-default" href="{{ url_for('.edit_board_profile', boardname=board.name) }}">编辑版块资料</a>
+        {% endif %}
+        </p>
+        <p>
+            {% if current_user.is_collect_board(board) %}
+            <a  href="{{ url_for('.not_collect_board', boardname=board.name) }}">
+                <span class="label label-success">已收藏 {{board.collectors.count()}}</span>
+            </a>
+            {% else %}
+            <a  href="{{ url_for('.collect_board', boardname=board.name) }}">
+                <span class="label label-primary">收藏{% if board.collectors.count() != 0 %} {{board.collectors.count()}} {% endif %}</span>
+            </a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+<div class="post-tabs">
+    <ul class="nav nav-tabs">
+        <li{% if board_show_all %} class="active"{% endif %}><a href="{{ url_for('.board_show_all', boardname=board.name) }}">所有帖子</a></li>
+        <li{% if board_popular %} class="active"{% endif %}><a href="{{ url_for('.board_popular', boardname=board.name) }}">热点</a></li>
+        <li{% if board_click_above_avg %} class="active"{% endif %}><a href="{{ url_for('.board_click_above_avg', boardname=board.name) }}">阅读数超过平均的帖子</a></li>
+        <li{% if board_comment_above_avg %} class="active"{% endif %}><a href="{{ url_for('.board_comment_above_avg', boardname=board.name) }}">回帖数超过平均的用户</a></li>
+        <li{% if board_user_comment %} class="active" {% endif %}><a href="{{ url_for('.board_user_comment', boardname=board.name) }}">回帖数排序</a></li>
+        <li{% if board_user_post %} class="active" {% endif %}><a href="{{ url_for('.board_user_post', boardname=board.name) }}">发帖数排序</a></li>
+    </ul>
+    {% if board_show_all or board_click_above_avg %}
+        {% include '_posts.html' %}
+    {% elif board_popular %}
+        {% include '_most_popular.html' %}
+    {% elif board_comment_above_avg or board_user_comment or board_user_post %}
+        {% include '_board_users.html' %}
+    {% endif %}
+</div>
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.board', boardname=board.name) }}
+</div>
+{% endif %}
+
+
+<div class="post-form">
+    {% if current_user.can(Permission.WRITE) %}
+    {{ wtf.quick_form(form) }}
+    {% endif %}
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}BBS{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <a  href="{{url_for('.index')}}"> 首页 </a>  >> <a href="{{url_for('.boards')}}"> 版块目录 </a>
+</div>
+<!--<div>-->
+    <!--{% if current_user.can(Permission.WRITE) %}-->
+    <!--{{ wtf.quick_form(form) }}-->
+    <!--{% endif %}-->
+<!--</div>-->
+{% include '_boards.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.boards') }}
+</div>
+{% endif %}
+{% endblock %}

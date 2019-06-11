@@ -1,0 +1,15 @@
+<main class="grid">
+  {% for board in boards %}
+    <article>
+        <a  href="{{ url_for('.board',boardname=board.name) }}">
+            <img src="{{ board.gravatar(size=256) }}" alt="Board photo">
+        </a>
+        <div class="text">
+            <h3><a href="{{ url_for('.board',boardname=board.name) }}">{{ board.name }}</a>[{{board.posts.count()}}帖子]</h3>
+          <p>板块介绍：{{ board.intoduction }}</p>
+          <!--<button onclick="window.location.href=&quot;{{ url_for('.board',boardname=board.name) }}&quot;">Go</button>-->
+        </div>
+    </article>
+  {% endfor %}
+</main>
+
