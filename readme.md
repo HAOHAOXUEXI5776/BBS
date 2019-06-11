@@ -1,4 +1,4 @@
-使用python中的Falsk框架搭建的网络论坛系统。
+使用python中的Falsk框架搭建的网络论坛系统。本项目是基于[这里的代码](https://github.com/miguelgrinberg/flasky)，该代码是书籍《Flask+Web开发：基于Python的Web应用开发实战》的配套代码。书籍循循善诱，通俗易懂，五星推荐。
 
 # 代码及运行说明
 BBS目录为项目根目录，有关代码结构和代码运行流程，参见BBS/Summary.txt文件。
